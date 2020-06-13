@@ -4,6 +4,9 @@
 #include <utility>
 #include <vector>
 
+/*
+Класс для работы с историей смены имён человека
+*/
 
 class Person {
 public:
