@@ -9,28 +9,29 @@ public:
 
     Rational():
         _numerator(0),
-        _denominator(1) {
-
-        };
+        _denominator(1) {};
 
     Rational(long numerator, long denominator) {
 
-            if(numerator * denominator < 0) {
-                _numerator = -1 * abs(numerator);
-                _denominator = abs(denominator);
-            }
-            else if(numerator == 0)
-            {
-                _numerator = 0;
-                _denominator = 1;
-            }
-            else
-            {
-                _numerator = abs(numerator);
-                _denominator = abs(denominator);
-            }
+        if(denominator == 0)
+            throw std::invalid_argument("Invalid argument");
 
-            Reduce();
+        if(numerator * denominator < 0) {
+            _numerator = -1 * abs(numerator);
+            _denominator = abs(denominator);
+        }
+        else if(numerator == 0)
+        {
+            _numerator = 0;
+            _denominator = 1;
+        }
+        else
+        {
+            _numerator = abs(numerator);
+            _denominator = abs(denominator);
+        }
+
+        Reduce();
 
     };
 
@@ -87,7 +88,12 @@ Rational operator*(const Rational& lhs, const Rational& rhs) {
 }
 
 Rational operator/(const Rational& lhs, const Rational& rhs) {
+
+    if(rhs.Numerator() == 0) 
+        throw std::domain_error("Division by zero");
+
     return Rational(lhs.Numerator() * rhs.Denominator(), lhs.Denominator() * rhs.Numerator());
+
 }
 
 std::ostream& operator<<(std::ostream& out, const Rational& ral) {
@@ -143,4 +149,45 @@ bool operator>=(const Rational& lhs, const Rational& rhs) {
     else
         return false;
 
+}
+
+int main(int argc, char const *argv[])
+{
+    int a, b;
+    char sign, buff;
+
+    std::cin >> a >> sign >> b;
+
+    try
+    {
+        Rational f(a, b);
+
+        std::cin >> sign >> a >> buff >> b;
+
+        Rational s(a, b);
+        
+        if(sign == '+')
+            std::cout << f + s << std::endl;
+        if(sign == '-')
+            std::cout << f - s << std::endl;
+        if(sign == '*')
+            std::cout << f * s << std::endl;
+        if(sign == '/') {
+            try
+            {
+                std::cout << f / s << std::endl;
+            }
+            catch(const std::domain_error& e)
+            {
+                std::cout << e.what() << '\n';
+            }
+        }
+
+    }
+    catch(const std::invalid_argument& e)
+    {
+        std::cout << e.what() << '\n';
+    }
+    
+    return 0;
 }
